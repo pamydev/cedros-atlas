@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "path": ".",
+    },
+  ],
+  "settings": {
+    "workbench.colorTheme": "Solarized Dark",
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/*.wcto.js": true,
+    },
+    "files.exclude": {
+      "**/*.wcto.js": true,
+    },
+  },
+}

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es2022",
+    "checkJs": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "paths": {
+      "@libs/*": ["./libs/*"]
+    }
+  },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
