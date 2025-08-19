@@ -6,6 +6,7 @@ export class $div extends Constructos {
  /**
   * 
   * @param {object} [elements]
+  * @param {string} [elements.class]  
   * @param {any} [elements.content]  
   * @param {object} [options]
   * @param {string} [options.identifier]
@@ -32,7 +33,7 @@ export class $div extends Constructos {
   */
  code (props) {
   return `
-  <div id="div-win-${this.identifier}">${props?.content || ""}</div>
+  <div id="div-win-${this.identifier}" class="${props?.class || ""}">${props?.content || ""}</div>
 `;
  }
  /**

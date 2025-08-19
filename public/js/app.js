@@ -226,6 +226,219 @@ var strings_default = W.strings = {
   disconnected: "Disconnected"
 };
 
+// node_modules/winnetoujs/src/constructos.js
+var Constructos = class {
+  /**
+   *
+   * Digest all constructo props to find
+   * {mutable:"string"} pattern in order to
+   * change it to W.getMutable("string") value
+   * @param {object} constructoProps
+   * @protected
+   */
+  _mutableToString(constructoProps) {
+    if (constructoProps) {
+      let jsonElements = JSON.parse(JSON.stringify(constructoProps));
+      Object.keys(constructoProps).forEach((item) => {
+        if (typeof constructoProps[item] === "object" && constructoProps[item] !== null) {
+          let mutable = constructoProps[item].mutable;
+          let val;
+          Winnetou.getMutable(mutable) || Winnetou.getMutable(mutable) === "" ? val = Winnetou.getMutable(mutable) : val = `Mutable "${mutable}" not initialized yet.`;
+          jsonElements[item] = val;
+        }
+      });
+      return jsonElements;
+    } else {
+      return constructoProps;
+    }
+  }
+  /**
+   * Store constructos that using mutables
+   * in Winnetou.usingMutable var in order to
+   * update constructo when W.setMutable
+   * if triggered.
+   * @param {*} pureId
+   * @param {*} elements
+   * @param {*} options
+   * @param {*} method
+   * @protected
+   */
+  _saveUsingMutable(pureId, elements, options, method) {
+    if (elements) {
+      Object.keys(elements).forEach((item) => {
+        if (typeof elements[item] === "object" && elements[item] !== null) {
+          if (!Winnetou.usingMutable[elements[item].mutable])
+            Winnetou.usingMutable[elements[item].mutable] = [];
+          let obj = {
+            pureId,
+            elements,
+            options,
+            method
+          };
+          if (Winnetou.usingMutable[elements[item].mutable].filter(
+            (x) => x.pureId == pureId
+          ).length > 0) {
+          } else {
+            Winnetou.usingMutable[elements[item].mutable].push(obj);
+          }
+        }
+      });
+    }
+    if (options) {
+      Object.keys(options).forEach((item) => {
+        if (typeof options[item] === "object" && options[item] !== null) {
+          if (!Winnetou.usingMutable[options[item].mutable])
+            Winnetou.usingMutable[options[item].mutable] = [];
+          let obj = {
+            pureId,
+            elements,
+            options,
+            method
+          };
+          if (Winnetou.usingMutable[options[item].mutable].filter(
+            (x) => x.pureId == pureId
+          ).length > 0) {
+          } else {
+            Winnetou.usingMutable[options[item].mutable].push(obj);
+          }
+        }
+      });
+    }
+  }
+  /**
+   * Generates a random identifier
+   * @protected
+   * @param  {string=} identifier
+   */
+  _getIdentifier(identifier) {
+    if (identifier != "notSet") return identifier;
+    else return ++Winnetou.constructoId;
+  }
+  /**
+   * Utility to attach an HTML string into the DOM.
+   * Supports special cases for table elements, replacement, clearing, and reverse insertion.
+   * @protected
+   */
+  attachToDOM(component, output, options = {}) {
+    const isTableElement = component.match(
+      /^\s*?<tr|^\s*?<td|^\s*?<table|^\s*?<th|^\s*?<tbody|^\s*?<thead|^\s*?<tfoot/
+    );
+    function handleTableElements() {
+      let el = document.querySelectorAll(output);
+      if (el.length === 0) {
+        el = document.querySelectorAll("#" + output);
+      }
+      el.forEach((item) => {
+        if (options.clear) item.innerHTML = "";
+        if (options.reverse) {
+          item.innerHTML = component + item.innerHTML;
+        } else {
+          item.innerHTML += component;
+        }
+      });
+    }
+    function handleNormalElements() {
+      const frag = document.createRange().createContextualFragment(component);
+      if (typeof output !== "object") {
+        let el = document.querySelectorAll(output);
+        if (el.length === 0) el = document.querySelectorAll("#" + output);
+        el.forEach((item) => {
+          if (options.clear) item.innerHTML = "";
+          if (options.reverse) {
+            item.prepend(frag);
+          } else {
+            item.appendChild(frag);
+          }
+        });
+      } else {
+        if (options.clear) output.innerHTML = "";
+        if (options.reverse) {
+          output.prepend(frag);
+        } else {
+          output.appendChild(frag);
+        }
+      }
+    }
+    if (isTableElement) {
+      handleTableElements();
+    } else {
+      handleNormalElements();
+    }
+  }
+};
+
+// src/common/common.wcto.js
+var $div = class _$div extends Constructos {
+  // ========================================
+  /**
+   * 
+   * @param {object} [elements]
+   * @param {string} [elements.class]  
+   * @param {any} [elements.content]  
+   * @param {object} [options]
+   * @param {string} [options.identifier]
+   */
+  constructor(elements, options) {
+    super();
+    this.identifier = this._getIdentifier(options ? options.identifier || "notSet" : "notSet");
+    const digestedPropsToString = this._mutableToString(elements);
+    this.component = this.code(
+      digestedPropsToString
+    );
+    this._saveUsingMutable(
+      `div-win-${this.identifier}`,
+      elements,
+      options,
+      _$div
+    );
+  }
+  /**
+   * Generate the HTML code for this constructo
+   * @param {*} props - The properties object containing all prop values
+   * @returns {string} The HTML template string with interpolated values
+   * @protected
+   */
+  code(props) {
+    return `
+  <div id="div-win-${this.identifier}" class="${(props == null ? void 0 : props.class) || ""}">${(props == null ? void 0 : props.content) || ""}</div>
+`;
+  }
+  /**
+   * Create Winnetou Constructo
+   * @param  {object|string} output The node or list of nodes where the component will be created
+   * @param  {object} [options] Options to control how the construct is inserted. Optional.
+   * @param  {boolean} [options.clear] Clean the node before inserting the construct
+   * @param  {boolean} [options.reverse] Place the construct in front of other constructs
+   */
+  create(output, options) {
+    this.attachToDOM(
+      this.component,
+      output,
+      options
+    );
+    return {
+      ids: {
+        div: `div-win-${this.identifier}`
+      }
+    };
+  }
+  /**
+   * Get the constructo as a string
+   * @returns {string} The component HTML string
+   */
+  constructoString() {
+    return this.component;
+  }
+};
+
+// src/fileExplorer/fileExplorer.ts
+var FileExplorer = class {
+  output;
+  constructor(args) {
+    this.output = args.output;
+  }
+};
+
 // src/app.ts
 updateTranslations({
   stringsClass: strings_default,
@@ -238,6 +451,16 @@ var app = class {
     this.render();
   }
   render() {
+    const mainDiv = new $div({ class: "mainDiv" }).create("#app").ids.div;
+    const projectsDiv = new $div({
+      class: "projectsDiv"
+    }).create(mainDiv);
+    const fileExplorerDiv = new $div({
+      class: "fileExplorerDiv"
+    }).create(mainDiv).ids.div;
+    new FileExplorer({
+      output: fileExplorerDiv
+    });
   }
 };
 //# sourceMappingURL=app.js.map

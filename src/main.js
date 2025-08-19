@@ -3,6 +3,7 @@ import path from "node:path";
 import started from "electron-squirrel-startup";
 import express from "express";
 import { template } from "./menu.js";
+import { fileExplorerRoutes } from "./controller/fileExplorer.js";
 
 // Create Express server
 const expressApp = express();
@@ -10,6 +11,8 @@ expressApp.get("/", (req, res) => {
   // __dirname = .vite/build
   res.sendFile(path.join(__dirname, "../../index.html"));
 });
+
+fileExplorerRoutes(expressApp);
 
 // Serve static files from public directory
 expressApp.use(express.static(path.join(__dirname, "../../public")));

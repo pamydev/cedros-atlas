@@ -1,0 +1,18 @@
+.mainDiv {
+  width: 100%;
+  height: 100%;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  padding: 20px;
+
+  display: flex;
+  gap: 20px;
+
+  .projectsDiv {
+    width: 60%;
+    height: 100%;
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 20px;
+  }
+}
