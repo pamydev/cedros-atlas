@@ -3,13 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "wbr:dev": "node wbr -b -v -w",
+    "wbr:prod": "node wbr -b -p",
+    "sass:dev": "sass --embed-sources --watch --style expanded sass/main.scss:dist/css/main.css  --load-path='./src'",
+    "sass:prod": "sass sass/main.scss:dist/css/main.min.css --style compressed --no-source-map --quiet  --load-path='./src'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "winnetoujs": "^3.0.0-beta.17"
+    "winnetoujs": "^3.0.0-beta.19"
   }
 }

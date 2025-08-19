@@ -1,0 +1,19 @@
+@import url("https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@100;200;300;400;500;600;700;800;900&display=swap");
+:root {
+  --background-color: #0f0f0f;
+  --foreground-color: #f1f1f1;
+  --accent-color: #facb24;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+}
+
+/*# sourceMappingURL=main.css.map */

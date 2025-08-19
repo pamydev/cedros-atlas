@@ -10,6 +10,25 @@ Use this guide to create WinnetouJs web applications.
 
 When WinnetouJs is installed, it provides a WBR.js file which is responsible to transpile wcto.html files into wcto.js files. User will write html components (called `constructos`) inside wcto.html file and WBR will compile it into reusable js classes which can be imported inside js/ts apps.
 
+## Starting up a WinnetouJs WEB Application
+
+**Ask user if he wants you to help him to create a basic WinnetouJs scaffolding project.**
+
+To help user to create basic WinnetouJs skeleton project, do the following:
+
+- add win.config.js
+- add rules in settings workspace
+- create jsconfig.js
+- create basic folder structure
+- add package.json scripts
+
+\*\*When finish the above tasks, ask user if he will use sass, if yes, add this config in `package.json` as well:
+
+```json
+    "sass:dev": "sass --embed-sources --watch --style expanded sass/main.scss:dist/css/main.css  --load-path='./src'",
+    "sass:prod": "sass sass/main.scss:dist/css/main.min.css --style compressed --no-source-map --quiet  --load-path='./src'"
+```
+
 ## Installation
 
 `npm i winnetoujs`
@@ -108,29 +127,13 @@ To maximize performance when compiling, add these settings to `package.json` fil
 application/
 ├── src/
 │   ├── app.ts
-│   ├── dashboard/
-│   │   ├── dashboard.wcto.html
-│   │   ├── _dashboard.scss
-│   │   └── dashboard.ts
-│   ├── chart-card/
-│   │   ├── chart-card.wcto.html
-│   │   ├── _chart-card.scss
-│   │   └── chart-card.ts
-│   ├── menu-item/
-│   │   ├── menu-item.wcto.html
-│   │   ├── _menu-item.scss
-│   │   └── menu-item.ts
-│   └── sidebar/
-│       ├── sidebar.wcto.html
-│       ├── _sidebar.scss
-│       └── sidebar.ts
-├── app/
-│   ├── en-us.ts
-│   └── router.ts
+│   ├── common-constructos/
+│   │   ├── common.wcto.html
+│   │   ├── _common.scss
+│   │   └── common.ts
+├── libs/
 ├── sass/
-│   ├── app.scss
-│   ├── login.scss
-│   └── _variables.scss
+│   ├── main.scss
 ├── package.json
 ├── wbr.config.json
 ├── wbr.js

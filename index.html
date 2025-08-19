@@ -1,12 +1,22 @@
 <!doctype html>
 <html>
   <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+        default-src 'self';
+        script-src 'self';
+        style-src 'self' https://fonts.googleapis.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data:;
+      " />
+
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Cedros Atlas Explorer</title>
+    <link rel="stylesheet" href="./winnetoujs/dist/css/main.css" />
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>test live reload</p>
-    <script type="module" src="/src/renderer.js"></script>
+    <div id="app"></div>
+    <script type="module" src="./winnetoujs/dist/js/app.js"></script>
   </body>
 </html>
