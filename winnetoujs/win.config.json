@@ -1,5 +1,5 @@
 {
   "apps": ["./src/app.ts"],
-  "outputDir": "./dist/js",
+  "outputDir": "../public/js/",
   "constructosSourceFolder": "./src"
 }

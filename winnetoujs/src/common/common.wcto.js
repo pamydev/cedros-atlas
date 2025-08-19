@@ -1,12 +1,12 @@
 import {
  Constructos
 } from "winnetoujs/src/constructos.js";
-export class $test extends Constructos {
+export class $div extends Constructos {
  // ========================================
  /**
   * 
-  * @param {object} elements
-  * @param {any} elements.text  
+  * @param {object} [elements]
+  * @param {any} [elements.content]  
   * @param {object} [options]
   * @param {string} [options.identifier]
   */
@@ -21,8 +21,8 @@ export class $test extends Constructos {
   this.component = this.code(
    digestedPropsToString);
   this._saveUsingMutable(
-   `test-win-${this.identifier}`, elements,
-   options, $test);
+   `div-win-${this.identifier}`, elements,
+   options, $div);
  }
  /**
   * Generate the HTML code for this constructo
@@ -32,7 +32,7 @@ export class $test extends Constructos {
   */
  code (props) {
   return `
-  <div id="test-win-${this.identifier}">${props?.text || ""}</div>
+  <div id="div-win-${this.identifier}">${props?.content || ""}</div>
 `;
  }
  /**
@@ -47,7 +47,7 @@ export class $test extends Constructos {
    options);
   return {
    ids: {
-    test: `test-win-${this.identifier}`,
+    div: `div-win-${this.identifier}`,
    },
   };
  }

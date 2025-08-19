@@ -1,5 +1,20 @@
-import { $test } from "./common/common.wcto";
+import {
+  updateTranslations,
+  changeLang,
+} from "winnetoujs/modules/translations";
+import strings from "./strings";
 
-new $test({
-  text: "WinnetouJs Rocks!",
-}).create("#app");
+updateTranslations({
+  stringsClass: strings,
+  translationsPublicPath: "/translations",
+}).then(() => {
+  new app();
+});
+
+class app {
+  constructor() {
+    this.render();
+  }
+
+  private render() {}
+}

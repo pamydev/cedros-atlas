@@ -1,6 +1,24 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, Menu } from "electron";
 import path from "node:path";
 import started from "electron-squirrel-startup";
+import express from "express";
+import { template } from "./menu.js";
+
+// Create Express server
+const expressApp = express();
+expressApp.get("/", (req, res) => {
+  // __dirname = .vite/build
+  res.sendFile(path.join(__dirname, "../../index.html"));
+});
+
+// Serve static files from public directory
+expressApp.use(express.static(path.join(__dirname, "../../public")));
+
+// Start server on a free port
+const SERVER_PORT = 3123;
+expressApp.listen(SERVER_PORT, () => {
+  console.log(`Express server running at http://localhost:${SERVER_PORT}`);
+});
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
@@ -10,22 +28,18 @@ if (started) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1600,
+    height: 700,
     icon: "./resources/atlas-icon.png",
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
     },
   });
 
-  // and load the index.html of the app.
-  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
-    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
-  } else {
-    mainWindow.loadFile(
-      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
-    );
-  }
+  const menu = Menu.buildFromTemplate(template(mainWindow));
+  Menu.setApplicationMenu(menu);
+
+  mainWindow.loadURL(`http://localhost:${SERVER_PORT}`);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
