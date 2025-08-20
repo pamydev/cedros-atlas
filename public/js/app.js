@@ -1,6 +1,6 @@
 // node_modules/winnetoujs/modules/translations.js
 var updateTranslations = async (args) => {
-  const get = (url) => {
+  const get2 = (url) => {
     return new Promise((resolve, reject) => {
       fetch(url, {
         method: "GET"
@@ -23,7 +23,7 @@ var updateTranslations = async (args) => {
     const file = `${args.translationsPublicPath}/${localLang}.json`;
     let data;
     try {
-      data = await get(file);
+      data = await get2(file);
     } catch (e) {
       console.warn(
         `WinnetouJs translations error. Reloading... The file '${file}' was not found.`
@@ -431,11 +431,252 @@ var $div = class _$div extends Constructos {
   }
 };
 
+// libs/fetch.ts
+var FetchWrapper = class {
+  baseURL;
+  defaultHeaders;
+  timeout;
+  constructor(options = {}) {
+    this.baseURL = options.baseURL || "";
+    this.defaultHeaders = options.headers || {};
+    this.timeout = options.timeout || 1e4;
+  }
+  buildURL(endpoint) {
+    if (endpoint.startsWith("http")) {
+      return endpoint;
+    }
+    return `${this.baseURL}${endpoint}`;
+  }
+  async makeRequest(url, options) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+    try {
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal,
+        headers: {
+          ...this.defaultHeaders,
+          ...options.headers
+        }
+      });
+      clearTimeout(timeoutId);
+      return response;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === "AbortError") {
+        throw new Error(`Request timeout after ${this.timeout}ms`);
+      }
+      throw error;
+    }
+  }
+  /**
+   * GET request
+   */
+  async get(endpoint, options = {}) {
+    const url = this.buildURL(endpoint);
+    const response = await this.makeRequest(url, {
+      method: "GET",
+      headers: options.headers
+    });
+    if (!response.ok) {
+      throw new Error(`GET ${endpoint} failed with status ${response.status}`);
+    }
+    return response.json();
+  }
+  /**
+   * POST request
+   */
+  async post(endpoint, data, options = {}) {
+    const url = this.buildURL(endpoint);
+    const contentType = options.contentType || "application/json";
+    let body;
+    let headers = { ...options.headers };
+    if (contentType === "application/json") {
+      body = JSON.stringify(data);
+      headers["Content-Type"] = "application/json";
+    } else if (contentType === "application/x-www-form-urlencoded") {
+      body = new URLSearchParams(data);
+      headers["Content-Type"] = "application/x-www-form-urlencoded";
+    } else if (contentType === "multipart/form-data") {
+      body = data instanceof FormData ? data : new FormData();
+    } else {
+      body = data;
+    }
+    const response = await this.makeRequest(url, {
+      method: "POST",
+      headers,
+      body
+    });
+    if (!response.ok) {
+      throw new Error(`POST ${endpoint} failed with status ${response.status}`);
+    }
+    return response.json();
+  }
+};
+var defaultFetch = new FetchWrapper();
+var get = (endpoint, options) => {
+  return defaultFetch.get(endpoint, options);
+};
+
+// src/fileExplorer/fileExplorer.wcto.js
+var $fileExplorer = class _$fileExplorer extends Constructos {
+  // ========================================
+  /**
+   * 
+   * @param {object} elements
+   * @param {any} elements.title  
+   * @param {object} [options]
+   * @param {string} [options.identifier]
+   */
+  constructor(elements, options) {
+    super();
+    this.identifier = this._getIdentifier(options ? options.identifier || "notSet" : "notSet");
+    const digestedPropsToString = this._mutableToString(elements);
+    this.component = this.code(
+      digestedPropsToString
+    );
+    this._saveUsingMutable(
+      `fileExplorer-win-${this.identifier}`,
+      elements,
+      options,
+      _$fileExplorer
+    );
+  }
+  /**
+   * Generate the HTML code for this constructo
+   * @param {*} props - The properties object containing all prop values
+   * @returns {string} The HTML template string with interpolated values
+   * @protected
+   */
+  code(props) {
+    return `
+  <div id="fileExplorer-win-${this.identifier}" class="fileExplorer">
+    <div class="__title">${(props == null ? void 0 : props.title) || ""}</div>
+    <div id="output-win-${this.identifier}" class="__output"></div>
+  </div>
+`;
+  }
+  /**
+   * Create Winnetou Constructo
+   * @param  {object|string} output The node or list of nodes where the component will be created
+   * @param  {object} [options] Options to control how the construct is inserted. Optional.
+   * @param  {boolean} [options.clear] Clean the node before inserting the construct
+   * @param  {boolean} [options.reverse] Place the construct in front of other constructs
+   */
+  create(output, options) {
+    this.attachToDOM(
+      this.component,
+      output,
+      options
+    );
+    return {
+      ids: {
+        fileExplorer: `fileExplorer-win-${this.identifier}`,
+        output: `output-win-${this.identifier}`
+      }
+    };
+  }
+  /**
+   * Get the constructo as a string
+   * @returns {string} The component HTML string
+   */
+  constructoString() {
+    return this.component;
+  }
+};
+var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
+  // ========================================
+  /**
+   * item
+   * @param {object} elements
+   * @param {'striped'|''} [elements.stripe]  
+   * @param {any} elements.icon  
+   * @param {any} elements.name  
+   * @param {any} elements.size  
+   * @param {object} [options]
+   * @param {string} [options.identifier]
+   */
+  constructor(elements, options) {
+    super();
+    this.identifier = this._getIdentifier(options ? options.identifier || "notSet" : "notSet");
+    const digestedPropsToString = this._mutableToString(elements);
+    this.component = this.code(
+      digestedPropsToString
+    );
+    this._saveUsingMutable(
+      `fileExplorerItem-win-${this.identifier}`,
+      elements,
+      options,
+      _$fileExplorerItem
+    );
+  }
+  /**
+   * Generate the HTML code for this constructo
+   * @param {*} props - The properties object containing all prop values
+   * @returns {string} The HTML template string with interpolated values
+   * @protected
+   */
+  code(props) {
+    return `
+  <div     id="fileExplorerItem-win-${this.identifier}"
+    class="fileExplorerItem ${(props == null ? void 0 : props.stripe) || ""}">
+    <span class="__icon">${(props == null ? void 0 : props.icon) || ""}</span>
+    <span class="__name">${(props == null ? void 0 : props.name) || ""}</span>
+    <span class="__size">${(props == null ? void 0 : props.size) || ""}</span>
+  </div>
+`;
+  }
+  /**
+   * Create Winnetou Constructo
+   * @param  {object|string} output The node or list of nodes where the component will be created
+   * @param  {object} [options] Options to control how the construct is inserted. Optional.
+   * @param  {boolean} [options.clear] Clean the node before inserting the construct
+   * @param  {boolean} [options.reverse] Place the construct in front of other constructs
+   */
+  create(output, options) {
+    this.attachToDOM(
+      this.component,
+      output,
+      options
+    );
+    return {
+      ids: {
+        fileExplorerItem: `fileExplorerItem-win-${this.identifier}`
+      }
+    };
+  }
+  /**
+   * Get the constructo as a string
+   * @returns {string} The component HTML string
+   */
+  constructoString() {
+    return this.component;
+  }
+};
+
 // src/fileExplorer/fileExplorer.ts
 var FileExplorer = class {
   output;
   constructor(args) {
     this.output = args.output;
+    this.render();
+    this.getHome();
+  }
+  render() {
+    this.output = new $fileExplorer({ title: "File Explorer" }).create(
+      this.output
+    ).ids.output;
+  }
+  async getHome() {
+    let res = await get("/fileExplorer/get/home");
+    res.data.map((item, index) => {
+      new $fileExplorerItem({
+        icon: "",
+        name: item.name,
+        size: item.size,
+        stripe: index % 2 === 0 ? "" : "striped"
+      }).create(this.output);
+    });
   }
 };
 

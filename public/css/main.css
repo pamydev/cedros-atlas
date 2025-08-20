@@ -16,6 +16,71 @@
   padding: 20px;
 }
 
+.fileExplorer {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--accent-color);
+  border-radius: 10px;
+  padding: 20px;
+  background-color: var(--background-color);
+}
+.fileExplorer .__title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--accent-color);
+}
+.fileExplorer .__output {
+  height: calc(100% - 60px);
+  overflow-y: auto;
+}
+.fileExplorer .__output::-webkit-scrollbar {
+  width: 8px;
+}
+.fileExplorer .__output::-webkit-scrollbar-track {
+  background: transparent;
+}
+.fileExplorer .__output::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 4px;
+}
+.fileExplorer .__output::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--accent-color) 80%, var(--foreground-color) 20%);
+}
+
+.fileExplorerItem {
+  display: flex;
+  align-items: center;
+  padding: 2px 12px;
+  margin: 2px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.fileExplorerItem.striped {
+  background-color: color-mix(in srgb, var(--foreground-color) 5%, transparent);
+}
+.fileExplorerItem .__icon {
+  width: 20px;
+  margin-right: 10px;
+  text-align: center;
+  color: var(--accent-color);
+}
+.fileExplorerItem .__name {
+  flex: 1;
+  color: var(--foreground-color);
+  font-weight: 500;
+}
+.fileExplorerItem .__size {
+  color: color-mix(in srgb, var(--foreground-color) 70%, transparent);
+  font-size: 0.9rem;
+  margin-left: 10px;
+  min-width: 80px;
+  text-align: right;
+}
+
 :root {
   --background-color: #0f0f0f;
   --foreground-color: #f1f1f1;

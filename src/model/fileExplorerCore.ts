@@ -1,7 +1,9 @@
 import { promises as fs } from "fs";
 import path from "path";
 import os from "os";
-export const getHome = async () => {
+import { IGetHome } from "@contracts/fileExplorer.types";
+import { IApi } from "@contracts/common.types";
+export const getHome = async (): Promise<IApi<IGetHome>> => {
   try {
     const homeDir = os.homedir();
     const items = await fs.readdir(homeDir, { withFileTypes: true });
@@ -12,7 +14,7 @@ export const getHome = async () => {
         const stats = await fs.stat(itemPath);
         return {
           name: item.name,
-          type: item.isDirectory() ? "folder" : "file",
+          type: item.isDirectory() ? "folder" : ("file" as "folder" | "file"),
           path: itemPath,
           size: stats.size, // Add file size
         };

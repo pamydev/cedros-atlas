@@ -4,7 +4,10 @@
     "target": "es2022",
     "checkJs": true,
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@contracts/*": ["./contracts/*"]
+    }
   },
   "exclude": ["node_modules", "**/node_modules/*"]
 }
