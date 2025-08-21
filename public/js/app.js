@@ -665,6 +665,31 @@ var convertSize = (bytes) => {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 };
 
+// libs/sorts.ts
+function sortBySize(items, order = "desc") {
+  return items.sort((a, b) => {
+    if (a.type === "file" && b.type === "folder") return -1;
+    if (a.type === "folder" && b.type === "file") return 1;
+    if (a.type === "folder" && b.type === "folder") {
+      return a.name.localeCompare(b.name);
+    }
+    if (a.type === "file" && b.type === "file") {
+      const aSize = a.size || 0;
+      const bSize = b.size || 0;
+      if (aSize !== bSize) {
+        return order === "desc" ? bSize - aSize : aSize - bSize;
+      }
+      return a.name.localeCompare(b.name);
+    }
+    return 0;
+  });
+}
+
+// libs/displayFilesOptions.ts
+function hideHiddenFiles(items) {
+  return items.filter((item) => !item.name.startsWith("."));
+}
+
 // src/fileExplorer/fileExplorer.ts
 var FileExplorer = class {
   output;
@@ -680,7 +705,9 @@ var FileExplorer = class {
   }
   async getHome() {
     let res = await get("/fileExplorer/get/home");
-    res.data.map((item, index) => {
+    const sortedData = sortBySize(res.data, "asc");
+    const visibleData = hideHiddenFiles(sortedData);
+    visibleData.map((item, index) => {
       new $fileExplorerItem({
         icon_src: this.getIconFromFileType(item.type, item.name),
         name: item.name,

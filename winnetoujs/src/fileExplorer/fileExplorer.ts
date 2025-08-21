@@ -3,6 +3,8 @@ import { IApi } from "@contracts/common.types";
 import { IGetHome } from "@contracts/fileExplorer.types";
 import { $fileExplorer, $fileExplorerItem } from "./fileExplorer.wcto";
 import { convertSize } from "@libs/sizes";
+import { sortByAlphabetic, sortByFileType, sortBySize } from "@libs/sorts";
+import { hideHiddenFiles } from "@libs/displayFilesOptions";
 
 export class FileExplorer {
   output: string;
@@ -20,7 +22,12 @@ export class FileExplorer {
 
   private async getHome() {
     let res: IApi<IGetHome> = await get("/fileExplorer/get/home");
-    res.data.map((item, index) => {
+
+    // Sort items: files first, then folders, both alphabetically
+    const sortedData = sortBySize(res.data, "asc");
+    const visibleData = hideHiddenFiles(sortedData);
+
+    visibleData.map((item, index) => {
       new $fileExplorerItem({
         icon_src: this.getIconFromFileType(item.type, item.name),
         name: item.name,
