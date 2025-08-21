@@ -11,7 +11,14 @@
 .mainDiv .projectsDiv {
   width: 60%;
   height: 100%;
-  border: 2px solid var(--accent-color);
+  border: 1px solid color-mix(in srgb, var(--foreground-color) 20%, transparent);
+  border-radius: 10px;
+  padding: 20px;
+}
+.mainDiv .fileExplorerDiv {
+  width: 40%;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--foreground-color) 20%, transparent);
   border-radius: 10px;
   padding: 20px;
 }
@@ -19,9 +26,8 @@
 .fileExplorer {
   width: 100%;
   height: 100%;
-  border: 2px solid var(--accent-color);
   border-radius: 10px;
-  padding: 20px;
+  padding: 0px;
   background-color: var(--background-color);
 }
 .fileExplorer .__title {
@@ -34,6 +40,7 @@
 }
 .fileExplorer .__output {
   height: calc(100% - 60px);
+  padding-right: 20px;
   overflow-y: auto;
 }
 .fileExplorer .__output::-webkit-scrollbar {
@@ -53,28 +60,36 @@
 .fileExplorerItem {
   display: flex;
   align-items: center;
-  padding: 2px 12px;
+  padding: 2px 4px;
   margin: 2px 0;
   border-radius: 6px;
-  cursor: pointer;
+  cursor: default;
   transition: background-color 0.2s ease;
 }
 .fileExplorerItem.striped {
-  background-color: color-mix(in srgb, var(--foreground-color) 5%, transparent);
+  background-color: color-mix(in srgb, var(--foreground-color) 2%, transparent);
 }
 .fileExplorerItem .__icon {
   width: 20px;
-  margin-right: 10px;
+  margin-right: 4px;
   text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   color: var(--accent-color);
+}
+.fileExplorerItem .__icon img {
+  max-width: 100%;
+  max-height: 100%;
 }
 .fileExplorerItem .__name {
   flex: 1;
-  color: var(--foreground-color);
-  font-weight: 500;
+  color: color-mix(in srgb, var(--foreground-color) 80%, transparent);
+  font-size: 14px;
+  font-weight: 900;
 }
 .fileExplorerItem .__size {
-  color: color-mix(in srgb, var(--foreground-color) 70%, transparent);
+  color: color-mix(in srgb, var(--foreground-color) 60%, transparent);
   font-size: 0.9rem;
   margin-left: 10px;
   min-width: 80px;
@@ -84,7 +99,7 @@
 :root {
   --background-color: #0f0f0f;
   --foreground-color: #f1f1f1;
-  --accent-color: #facb24;
+  --accent-color: #95ce40;
 }
 
 * {

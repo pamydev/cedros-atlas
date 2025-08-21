@@ -11,7 +11,16 @@
   .projectsDiv {
     width: 60%;
     height: 100%;
-    border: 2px solid var(--accent-color);
+    border: 1px solid
+      color-mix(in srgb, var(--foreground-color) 20%, transparent);
+    border-radius: 10px;
+    padding: 20px;
+  }
+  .fileExplorerDiv {
+    width: 40%;
+    height: 100%;
+    border: 1px solid
+      color-mix(in srgb, var(--foreground-color) 20%, transparent);
     border-radius: 10px;
     padding: 20px;
   }

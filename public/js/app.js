@@ -590,7 +590,7 @@ var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
    * item
    * @param {object} elements
    * @param {'striped'|''} [elements.stripe]  
-   * @param {any} elements.icon  
+   * @param {any} elements.icon_src  
    * @param {any} elements.name  
    * @param {any} elements.size  
    * @param {object} [options]
@@ -620,7 +620,9 @@ var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
     return `
   <div     id="fileExplorerItem-win-${this.identifier}"
     class="fileExplorerItem ${(props == null ? void 0 : props.stripe) || ""}">
-    <span class="__icon">${(props == null ? void 0 : props.icon) || ""}</span>
+    <span class="__icon">
+      <img src="${(props == null ? void 0 : props.icon_src) || ""}" >
+    </span>
     <span class="__name">${(props == null ? void 0 : props.name) || ""}</span>
     <span class="__size">${(props == null ? void 0 : props.size) || ""}</span>
   </div>
@@ -654,6 +656,15 @@ var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
   }
 };
 
+// libs/sizes.ts
+var convertSize = (bytes) => {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1e3;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+};
+
 // src/fileExplorer/fileExplorer.ts
 var FileExplorer = class {
   output;
@@ -671,12 +682,32 @@ var FileExplorer = class {
     let res = await get("/fileExplorer/get/home");
     res.data.map((item, index) => {
       new $fileExplorerItem({
-        icon: "",
+        icon_src: this.getIconFromFileType(item.type, item.name),
         name: item.name,
-        size: item.size,
+        size: item.type === "file" ? convertSize(item.size) : "",
         stripe: index % 2 === 0 ? "" : "striped"
       }).create(this.output);
     });
+  }
+  getIconFromFileType(type, name) {
+    var _a;
+    if (type === "folder") {
+      return "/icons/folder.png";
+    }
+    if (type === "file") {
+      const extension = (_a = name.split(".").pop()) == null ? void 0 : _a.toLowerCase();
+      switch (extension) {
+        case "txt":
+          return "/icons/txt.png";
+          break;
+        case "js":
+          return "/icons/code.png";
+          break;
+        default:
+          return "/icons/file.png";
+          break;
+      }
+    }
   }
 };
 
