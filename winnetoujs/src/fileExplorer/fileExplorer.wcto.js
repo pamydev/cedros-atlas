@@ -69,9 +69,11 @@ export class $fileExplorerItem extends Constructos {
   * item
   * @param {object} elements
   * @param {'striped'|''} [elements.stripe]  
+  * @param {'__titleItem'|''} [elements.isTitle]  
   * @param {any} elements.icon_src  
   * @param {any} elements.name  
   * @param {any} elements.size  
+  * @param {any} elements.type  
   * @param {object} [options]
   * @param {string} [options.identifier]
   */
@@ -98,12 +100,13 @@ export class $fileExplorerItem extends Constructos {
  code (props) {
   return `
   <div     id="fileExplorerItem-win-${this.identifier}"
-    class="fileExplorerItem ${props?.stripe || ""}">
+    class="fileExplorerItem ${props?.stripe || ""} ${props?.isTitle || ""}">
     <span class="__icon">
       <img src="${props?.icon_src || ""}" >
     </span>
     <span class="__name">${props?.name || ""}</span>
     <span class="__size">${props?.size || ""}</span>
+    <span class="__type">${props?.type || ""}</span>
   </div>
 `;
  }

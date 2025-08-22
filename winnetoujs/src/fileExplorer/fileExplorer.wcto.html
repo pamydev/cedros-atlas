@@ -8,11 +8,12 @@
 <winnetou description="item">
   <div
     id="[[fileExplorerItem]]"
-    class="fileExplorerItem {{stripe?:'striped'|''}}">
+    class="fileExplorerItem {{stripe?:'striped'|''}} {{isTitle?:'__titleItem'|''}}">
     <span class="__icon">
       <img src="{{icon_src}}" />
     </span>
     <span class="__name">{{name}}</span>
     <span class="__size">{{size}}</span>
+    <span class="__type">{{type}}</span>
   </div>
 </winnetou>

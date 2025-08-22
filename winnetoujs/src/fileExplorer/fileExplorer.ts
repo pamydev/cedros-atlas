@@ -5,6 +5,7 @@ import { $fileExplorer, $fileExplorerItem } from "./fileExplorer.wcto";
 import { convertSize } from "@libs/sizes";
 import { sortByAlphabetic, sortByFileType, sortBySize } from "@libs/sorts";
 import { hideHiddenFiles } from "@libs/displayFilesOptions";
+import { getFileExtension } from "@libs/extensions";
 
 export class FileExplorer {
   output: string;
@@ -21,18 +22,28 @@ export class FileExplorer {
   }
 
   private async getHome() {
+    // create title
+    new $fileExplorerItem({
+      icon_src: "",
+      name: "File name",
+      size: "Size",
+      type: "Type",
+      isTitle: "__titleItem",
+    }).create(this.output);
+
     let res: IApi<IGetHome> = await get("/fileExplorer/get/home");
 
     // Sort items: files first, then folders, both alphabetically
     const sortedData = sortBySize(res.data, "asc");
-    const visibleData = hideHiddenFiles(sortedData);
+    // const visibleData = hideHiddenFiles(sortedData);
 
-    visibleData.map((item, index) => {
+    sortedData.map((item, index) => {
       new $fileExplorerItem({
         icon_src: this.getIconFromFileType(item.type, item.name),
         name: item.name,
         size: item.type === "file" ? convertSize(item.size) : "",
         stripe: index % 2 === 0 ? "" : "striped",
+        type: item.type === "folder" ? "Folder" : getFileExtension(item.name),
       }).create(this.output);
     });
   }

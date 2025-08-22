@@ -590,9 +590,11 @@ var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
    * item
    * @param {object} elements
    * @param {'striped'|''} [elements.stripe]  
+   * @param {'__titleItem'|''} [elements.isTitle]  
    * @param {any} elements.icon_src  
    * @param {any} elements.name  
    * @param {any} elements.size  
+   * @param {any} elements.type  
    * @param {object} [options]
    * @param {string} [options.identifier]
    */
@@ -619,12 +621,13 @@ var $fileExplorerItem = class _$fileExplorerItem extends Constructos {
   code(props) {
     return `
   <div     id="fileExplorerItem-win-${this.identifier}"
-    class="fileExplorerItem ${(props == null ? void 0 : props.stripe) || ""}">
+    class="fileExplorerItem ${(props == null ? void 0 : props.stripe) || ""} ${(props == null ? void 0 : props.isTitle) || ""}">
     <span class="__icon">
       <img src="${(props == null ? void 0 : props.icon_src) || ""}" >
     </span>
     <span class="__name">${(props == null ? void 0 : props.name) || ""}</span>
     <span class="__size">${(props == null ? void 0 : props.size) || ""}</span>
+    <span class="__type">${(props == null ? void 0 : props.type) || ""}</span>
   </div>
 `;
   }
@@ -685,9 +688,24 @@ function sortBySize(items, order = "desc") {
   });
 }
 
-// libs/displayFilesOptions.ts
-function hideHiddenFiles(items) {
-  return items.filter((item) => !item.name.startsWith("."));
+// libs/extensions.ts
+function getFileExtension(filename) {
+  if (!filename || typeof filename !== "string") {
+    return "File";
+  }
+  const lastDotIndex = filename.lastIndexOf(".");
+  const lastSlashIndex = Math.max(
+    filename.lastIndexOf("/"),
+    filename.lastIndexOf("\\")
+  );
+  if (lastDotIndex === -1 || lastDotIndex < lastSlashIndex) {
+    return "File";
+  }
+  const filenameOnly = filename.substring(lastSlashIndex + 1);
+  if (filenameOnly.indexOf(".") === 0) {
+    return "File";
+  }
+  return filename.substring(lastDotIndex + 1).toLowerCase();
 }
 
 // src/fileExplorer/fileExplorer.ts
@@ -704,15 +722,22 @@ var FileExplorer = class {
     ).ids.output;
   }
   async getHome() {
+    new $fileExplorerItem({
+      icon_src: "",
+      name: "File name",
+      size: "Size",
+      type: "Type",
+      isTitle: "__titleItem"
+    }).create(this.output);
     let res = await get("/fileExplorer/get/home");
     const sortedData = sortBySize(res.data, "asc");
-    const visibleData = hideHiddenFiles(sortedData);
-    visibleData.map((item, index) => {
+    sortedData.map((item, index) => {
       new $fileExplorerItem({
         icon_src: this.getIconFromFileType(item.type, item.name),
         name: item.name,
         size: item.type === "file" ? convertSize(item.size) : "",
-        stripe: index % 2 === 0 ? "" : "striped"
+        stripe: index % 2 === 0 ? "" : "striped",
+        type: item.type === "folder" ? "Folder" : getFileExtension(item.name)
       }).create(this.output);
     });
   }

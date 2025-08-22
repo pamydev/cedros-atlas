@@ -39,6 +39,7 @@
   border-bottom: 1px solid var(--accent-color);
 }
 .fileExplorer .__output {
+  position: relative;
   height: calc(100% - 60px);
   padding-right: 20px;
   overflow-y: auto;
@@ -60,11 +61,20 @@
 .fileExplorerItem {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 2px 4px;
   margin: 2px 0;
   border-radius: 6px;
   cursor: default;
   transition: background-color 0.2s ease;
+}
+.fileExplorerItem.__titleItem {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 6px 4px;
+  backdrop-filter: blur(3px);
 }
 .fileExplorerItem.striped {
   background-color: color-mix(in srgb, var(--foreground-color) 2%, transparent);
@@ -94,6 +104,15 @@
   margin-left: 10px;
   min-width: 80px;
   text-align: right;
+  margin-right: 20px;
+}
+.fileExplorerItem .__type {
+  color: color-mix(in srgb, var(--foreground-color) 60%, transparent);
+  font-size: 0.9rem;
+  min-width: 40px;
+  padding-left: 10px;
+  text-align: right;
+  text-transform: capitalize;
 }
 
 :root {
